@@ -113,7 +113,7 @@ public class API {
         return try jsonDecoder.decode(UpdateBookmarkResponse.self, from: data)
     }
 
-    public func submitLink(threadKey: String, linkURL: String) async throws -> LinkResponse {
+    public func submitLink(threadKey: String, description: String, linkURL: String) async throws -> LinkResponse {
         guard await self.isAuthenticated() else {
             let err = NSError(domain: "co.brushedtype.musicthread", code: -3333, userInfo: [NSLocalizedDescriptionKey: "method requires auth"])
             throw err
@@ -121,7 +121,7 @@ public class API {
 
         let accessToken = try await self.tokenStore.fetchAccessToken(client: self.client)
 
-        let reqBody = SubmitMusicLinkRequest(threadKey: threadKey, linkURL: linkURL)
+        let reqBody = SubmitMusicLinkRequest(threadKey: threadKey, description: description, linkURL: linkURL)
 
         let jsonEncoder = JSONEncoder()
 
@@ -201,6 +201,7 @@ public struct Link: Decodable {
     public let key: String
     public let title: String
     public let artist: String
+    public let description: String
     public let thumbnailURL: URL?
     public let pageURL: URL
 
@@ -208,6 +209,7 @@ public struct Link: Decodable {
         case key
         case title
         case artist
+        case description
         case thumbnailURL = "thumbnail_url"
         case pageURL = "page_url"
     }
@@ -240,10 +242,12 @@ public struct LinkResponse: Decodable {
 
 struct SubmitMusicLinkRequest: Codable {
     let threadKey: String
+    let description: String
     let linkURL: String
 
     enum CodingKeys: String, CodingKey {
         case threadKey = "thread"
+        case description = "description"
         case linkURL = "url"
     }
 }
