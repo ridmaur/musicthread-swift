@@ -23,11 +23,14 @@ public class API {
         self.baseURL = client.baseURL.appendingPathComponent("/api")
         self.client = client
         self.tokenStore = TokenStore(authBaseURL: self.client.baseURL.appendingPathComponent("/oauth"), storage: tokenStorage)
-
     }
 
     public func setAuth(_ tokenResponse: TokenResponse) async throws {
         try await self.tokenStore.setAuth(tokenResponse)
+    }
+
+    public func unauthenticate() async throws {
+        try await self.tokenStore.unauthenticate()
     }
 
 
