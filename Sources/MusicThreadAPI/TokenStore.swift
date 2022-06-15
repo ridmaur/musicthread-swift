@@ -53,6 +53,11 @@ public actor TokenStore {
         try self.storage.set(authResposne.refreshToken, key: "refresh_token")
     }
 
+    public func unauthenticate() throws {
+        try self.storage.remove("access_token")
+        try self.storage.remove("refresh_token")
+    }
+
 
     func fetchAccessToken(client: ClientCredentials) async throws -> String {
         if let token = self.accessToken, self.isAccessTokenExpired == false {
